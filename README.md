@@ -1,3 +1,72 @@
+# Weather Board
+
+A small Laravel app that shows real-time current weather and a 5-day forecast for any city, powered by the OpenWeatherMap API. Built as a quick, focused project to practice consuming an external API from Laravel rather than managing your own data with Eloquent.
+
+## What it does
+
+- Search any city and get its current conditions: temperature, "feels like," and a short description with an icon
+- See a 5-day forecast strip, one summary per day
+- Handles invalid city names gracefully with an error message instead of crashing
+- Caches each city's weather data for 10 minutes so repeated searches don't hammer the API
+
+## Tech stack
+
+- **Laravel 13** / PHP 8.5
+- **OpenWeatherMap API** (`/weather` and `/forecast` endpoints) via Laravel's `Http` client
+- **Tailwind CSS** (via CDN, no build step)
+- Laravel's `Cache` facade for per-city response caching
+
+## How it works
+
+`WeatherController@index` takes a `city` query parameter (defaulting to Windsor), calls OpenWeatherMap's current-weather and 5-day-forecast endpoints server-side, and caches the combined result per city for 10 minutes. The forecast API returns data in 3-hour increments, so the controller collapses that down to one entry per day — picking the reading closest to midday — to keep the forecast strip clean.
+
+## Setup
+
+1. Clone the repo and install dependencies:
+   ```bash
+   composer install
+   ```
+
+2. Copy `.env.example` to `.env` and generate an app key:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+3. Get a free API key from [OpenWeatherMap](https://openweathermap.org/api) and add it to `.env`:
+   ```
+   OPENWEATHER_API_KEY=your_key_here
+   ```
+
+4. Run the app:
+   ```bash
+   php artisan serve
+   ```
+
+   Visit `http://127.0.0.1:8000`. Defaults to Windsor; use the search box to check other cities.
+
+## Project log
+
+Built in a single focused session:
+- Scaffolded a fresh Laravel project
+- Wired up `WeatherController` with current + forecast lookups and response caching
+- Built the Blade view with Tailwind styling
+- Debugged a missing view file (`resources/views/weather/index.blade.php`) and a misplaced `use` import in `routes/web.php`
+- Verified error handling for invalid city names
+- Pushed to GitHub with `.env` correctly excluded via `.gitignore`
+
+## Roadmap
+
+Tracked as issues in this repo:
+- [ ] Favorites list for logged-in users (requires auth)
+- [ ] Hourly forecast view (3-hour increments instead of daily)
+- [ ] Geolocation-based default city on first visit
+
+## License
+
+Personal portfolio project — no license applied.
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
